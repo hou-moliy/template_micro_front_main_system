@@ -39,6 +39,7 @@ module.exports = {
         // always（默认）：举例在语句末尾需要分号
         // never：举例不允许加分号
         // 举例=>  "semi":[2,'never'] 表示不允许有分号，有分号就会报错
+        indent: ["error", 2], // 2个空格缩进
         quotes: [1, "double"], // 建议使用双引号
         semi: [1, "always"], // 建议以分号结尾
         "comma-dangle": ["error", "always-multiline"], // 对象字面量项尾是逗号
@@ -47,5 +48,8 @@ module.exports = {
         "space-before-function-paren": [2, "always"], // 函数定义时括号前面必须有空格
         eqeqeq: [1, "always"], // 警告，要求使用 === 和 !==,这里似乎和sonar有点差异
         "spaced-comment": ["error", "always"], // 注释后随至少一个空白
+        'no-console': process.env.NODE_ENV === 'prod' ? 'warn' : 'off',
+        'no-debugger': process.env.NODE_ENV === 'prod' ? 'warn' : 'off',
+        camelcase: ["error", { properties: "never", ignoreDestructuring: true }], // 使用驼峰命名，不检查属性名称，不检查解构标识符
     }
 };
