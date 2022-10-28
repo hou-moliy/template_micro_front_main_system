@@ -12,14 +12,16 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start();
   document.title = defaultSettings.title;
   const hasToken = getToken();
+  console.log(1);
+  if (!to.name) {
+    console.log(2);
+  }
   if (to.path === "/login") {
     next();
+  } else if (hasToken) {
+    handleToErrorPage(to, next);
   } else {
-    if (hasToken) {
-      store.getters.roles.length ? next() : getAsyncRoutes(to, next);
-    } else {
-      whiteList.indexOf(to.path) !== -1 ? next() : next(`/login?redirect=${to.path}`);
-    }
+    whiteList.indexOf(to.path) !== -1 ? next() : next(`/login?redirect=${to.path}`);
   }
 });
 
@@ -39,6 +41,15 @@ const getAsyncRoutes = (to, next) => {
         next({ path: "/" });
       });
     });
+};
+const handleToErrorPage = (to, next) => {
+  const rolesLen = store.getters.roles.length;
+  if (rolesLen) {
+    // 有 name 属性，说明是主应用的路由
+    next();
+  } else {
+    getAsyncRoutes(to, next);
+  }
 };
 
 router.afterEach(() => {

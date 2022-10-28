@@ -12,7 +12,7 @@ const appRouter = {
   children: [
     {
       path: "dashboard",
-      name: "index",
+      name: "dashboard",
       meta: { title: "子应用·测试页面首页", icon: "menuSon" },
     },
     {

@@ -134,13 +134,20 @@ export const constantRoutes = [
     children: [
       {
         path: "/subapp1",
-        meta: { title: "子应用2", icon: "link" },
+        meta: {
+          title: "子应用2",
+          icon: "link",
+          isMicro: true, // 表示是微应用菜单
+        },
       },
     ],
   },
   vueSonMenu,
-  // 404 page 必须放到最后
-  { path: "*", redirect: "/404", hidden: true },
+  {
+    path: "/404",
+    component: () => import("@/views/404"),
+    hidden: true,
+  },
 ];
 const createRouter = () => new Router({
   mode: "history",
