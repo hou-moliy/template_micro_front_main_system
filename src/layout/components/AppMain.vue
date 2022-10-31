@@ -28,7 +28,9 @@ export default {
   mounted () {
     if (!window.qiankunStarted) {
       window.qiankunStarted = true;
-      startQiankun();
+      startQiankun({
+        sandbox: { experimentalStyleIsolation: true },
+      });
     }
   },
 };
