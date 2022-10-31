@@ -53,15 +53,15 @@ service.interceptors.response.use(res => {
     return res.data;
   }
 },
-  error => {
+error => {
 
-    Message({
-      message: error.message,
-      type: "error",
-      duration: 5 * 1000,
-    });
-    return Promise.reject(error);
-  },
+  Message({
+    message: error.message,
+    type: "error",
+    duration: 5 * 1000,
+  });
+  return Promise.reject(error);
+},
 );
 
 export default service;
