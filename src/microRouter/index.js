@@ -1,4 +1,5 @@
 import envConfig from "./config.js";// 配置子应用访问地址
+import actions from "@/shared";
 const ENV = process.env.NODE_ENV || "dev";
 const config = envConfig[ENV];
 const {
@@ -17,11 +18,13 @@ export default [
     entry: VUE_SON_APP,
     container: "#Appmicro",
     activeRule: `${process.env.VUE_APP_PROJECT_PATH}/vue-son`,
+    props: actions,
   },
   {
     name: `${process.env.VUE_APP_PROJECT_PATH}/subapp1`,
     entry: SUB_APP1,
     container: "#Appmicro",
     activeRule: `${process.env.VUE_APP_PROJECT_PATH}/subapp1`,
+    props: actions,
   },
 ];

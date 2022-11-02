@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <button @click="changeData">更改数据</button>
     <el-form ref="form"
              :model="form"
              label-width="120px">
@@ -103,6 +104,9 @@ export default {
         message: "cancel!",
         type: "warning",
       });
+    },
+    changeData () {
+      this.$store.commit("user/SET_NAME", "李四");
     },
   },
 };

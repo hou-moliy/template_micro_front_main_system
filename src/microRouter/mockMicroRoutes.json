@@ -1,0 +1,23 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "name": "/vue-son",
+      "entry": "xxxx",
+      "container": "#Appmicro",
+      "activeRule": "/vue-son"
+    },
+    {
+      "name": "/vue-son",
+      "entry": "xxxx",
+      "container": "#Appmicro",
+      "activeRule": "/vue-son"
+    },
+    {
+      "name": "/subapp1",
+      "entry": "yyyy",
+      "container": "#Appmicro",
+      "activeRule": "subapp1"
+    }
+  ]
+}

@@ -18,6 +18,9 @@
                           class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
+              {{$store.state.user.name}}
+            </el-dropdown-item>
+            <el-dropdown-item>
               首页
             </el-dropdown-item>
           </router-link>

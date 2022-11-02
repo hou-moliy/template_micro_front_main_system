@@ -8,11 +8,15 @@ const permission = {
   state: {
     routes: [],
     addRoutes: [],
+    microRoutes: [],
   },
   mutations: {
     SET_ROUTES: (state, routes) => {
       state.addRoutes = routes;
       state.routes = constantRoutes.concat(routes);
+    },
+    SET_MICRO_ROUTES: (state, microRoutes) => {
+      state.microRoutes = microRoutes;
     },
   },
   actions: {
@@ -25,6 +29,18 @@ const permission = {
           commit("SET_ROUTES", accessedRoutes);
           resolve(accessedRoutes);
         });
+      });
+    },
+    // 生成微应用注册表
+    generateMicroRoutes ({ commit }) {
+      return new Promise(resolve => {
+        // 请求后端接口
+        // getMicroRoutes().then(res => {
+        //   if (res.code === 200) {
+        commit("SET_MICRO_ROUTES", []);
+        resolve();
+        //   }
+        // });
       });
     },
   },
@@ -48,6 +64,13 @@ function filterAsyncRouter (asyncRouterMap) {
   });
 }
 
+// 遍历后端传来的微前端路由注册信息
+// function handleMicroRoutes (microRoutes) {
+//   const list = microRoutes.map((item) => {
+//     if (process.env) {
+//     }
+//   });
+// }
 
 
 export default {
