@@ -8,15 +8,11 @@ const permission = {
   state: {
     routes: [],
     addRoutes: [],
-    microRoutes: [],
   },
   mutations: {
     SET_ROUTES: (state, routes) => {
       state.addRoutes = routes;
       state.routes = constantRoutes.concat(routes);
-    },
-    SET_MICRO_ROUTES: (state, microRoutes) => {
-      state.microRoutes = microRoutes;
     },
   },
   actions: {
@@ -25,30 +21,26 @@ const permission = {
       return new Promise(resolve => {
         // 向后端请求路由数据
         getRouters().then(res => {
+          res.data.forEach(item => {
+            if (item.menuBelong) {
+              item.path = "/" + item.menuBelong + item.path;
+            }
+          });
           const accessedRoutes = filterAsyncRouter(res.data);
           commit("SET_ROUTES", accessedRoutes);
           resolve(accessedRoutes);
         });
       });
     },
-    // 生成微应用注册表
-    generateMicroRoutes ({ commit }) {
-      return new Promise(resolve => {
-        // 请求后端接口
-        // getMicroRoutes().then(res => {
-        //   if (res.code === 200) {
-        commit("SET_MICRO_ROUTES", []);
-        resolve();
-        //   }
-        // });
-      });
-    },
   },
 };
 
 // 遍历后台传来的路由字符串，转换为组件对象
-function filterAsyncRouter (asyncRouterMap) {
+function filterAsyncRouter (asyncRouterMap, type) {
   return asyncRouterMap.filter(route => {
+    if (type === "children") {
+      delete route.component;
+    }
     if (route.component) {
       // Layout组件特殊处理
       if (route.component === "Layout") {
@@ -58,21 +50,11 @@ function filterAsyncRouter (asyncRouterMap) {
       }
     }
     if (route.children !== null && route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children);
+      route.children = filterAsyncRouter(route.children, "children");
     }
     return true;
   });
 }
-
-// 遍历后端传来的微前端路由注册信息
-// function handleMicroRoutes (microRoutes) {
-//   const list = microRoutes.map((item) => {
-//     if (process.env) {
-//     }
-//   });
-// }
-
-
 export default {
   namespaced: true,
   ...permission,
