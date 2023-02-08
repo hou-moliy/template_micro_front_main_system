@@ -12,7 +12,7 @@ function resolve (dir) {
 }
 
 const name = defaultSettings.title; // page title
-const port = process.env.port || process.env.npm_config_port || 9528; // dev port
+const port = process.env.port || process.env.npm_config_port || 9529; // dev port
 module.exports = {
   publicPath: process.env.VUE_APP_PROJECT_PATH || "/",
   outputDir: "dist",
@@ -25,19 +25,18 @@ module.exports = {
       errors: true,
     },
     proxy: {
-      // 公用代理-admin
-      [process.env.VUE_APP_BASE_API]: {
-        // target: `http://10.4.5.252:9503/admin`, // 测试服务器
-        target: "https://t133.ebupt.com.cn/rjhTest/manageServer", // 实验室
-        changeOrigin: true,
-        pathRewrite: {
-          ["^" + process.env.VUE_APP_BASE_API]: "",
-        },
-      },
       // 公共的静态资源代理
       [process.env.VUE_APP_STATIC_IMGS]: {
         target: "http://10.1.63.203:8050/",
         changeOrigin: true,
+      },
+      // 公用代理-admin
+      [process.env.VUE_APP_BASE_API]: {
+        target: "http://10.1.35.207:8180/admin", // 集中管理平台
+        changeOrigin: true,
+        pathRewrite: {
+          ["^" + process.env.VUE_APP_BASE_API]: "",
+        },
       },
     },
   },

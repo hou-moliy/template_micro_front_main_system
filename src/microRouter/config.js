@@ -1,13 +1,19 @@
+const BASEURL = process.env.VUE_APP_BASE_URL;
+const ENV = process.env.NODE_ENV;
+
 export default {
-  "dev": {
-    "VUE_ELEMENTUI_ADMIN": "//localhost:9529",
-    "VUE_SON_APP": "http://10.4.5.0:9529/",
-    "SUB_APP1": "//localhost:8877/activity/ ",
-    "TAMIL_APP": "//localhost:9529",
+  [ENV]: {
+    "MARKETING": `${BASEURL}/marketing/`,
+    "PORTAL": `${BASEURL}/portal/`,
+    "SYSTEM": `${BASEURL}/system/`,
+    "WXMP": `${BASEURL}/wxmp/`,
+    "WEB": `${BASEURL}/web/`,
   },
-  "production": {
-    "VUE_ELEMENTUI_ADMIN": "//localhost:9529",
-    "VUE_SON_APP": "//localhost:9529",
-    "TAMIL_APP": "//localhost:9529",
+  "dev": {
+    "MARKETING": "http://10.4.5.0:9528/marketing/",
+    "PORTAL": "http://192.168.31.146:9530/portal/",
+    "SYSTEM": "http://192.168.31.146:9531/system/",
+    "WXMP": "http://192.168.31.146:9532/wxmp/",
+    "WEB": "http://192.168.31.146:9536/web/",
   },
 };

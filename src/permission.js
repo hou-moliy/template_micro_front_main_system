@@ -41,7 +41,6 @@ const getAsyncRoutes = (to, next) => {
 const handleToErrorPage = (to, next) => {
   const rolesLen = store.getters.roles.length;
   if (rolesLen) {
-    // 有 name 属性，说明是主应用的路由
     next();
   } else {
     getAsyncRoutes(to, next);

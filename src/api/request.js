@@ -16,10 +16,6 @@ service.interceptors.request.use(
     if (getToken()) {
       config.headers["Authorization"] = "Bearer " + getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
-    if (config.url.indexOf("wechat/") > -1) {
-      config.url = config.url.replace("/wechat", "");
-      config.baseURL = process.env.VUE_APP_WX_BASE_API;
-    }
     return config;
   },
   error => {
@@ -52,9 +48,7 @@ service.interceptors.response.use(res => {
   } else {
     return res.data;
   }
-},
-error => {
-
+}, error => {
   Message({
     message: error.message,
     type: "error",

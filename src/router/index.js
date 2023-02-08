@@ -7,7 +7,7 @@ import Layout from "@/layout";
  * 没有权限要求的基页
  * 所有角色都可以被访问
  */
-import vueSonMenu from "./modules/appsMenu";
+import vueSonMenu from "./modules/appsMenu"; // 未接入动态路由时，静态路由测试
 export const constantRoutes = [
   {
     path: "/login",
@@ -125,20 +125,6 @@ export const constantRoutes = [
       {
         path: "https://www.baidu.com/",
         meta: { title: "外部链接", icon: "link" },
-      },
-    ],
-  },
-  {
-    path: "/subapp1",
-    component: Layout,
-    children: [
-      {
-        path: "/subapp1",
-        meta: {
-          title: "子应用2",
-          icon: "link",
-          isMicro: true, // 表示是微应用菜单
-        },
       },
     ],
   },
