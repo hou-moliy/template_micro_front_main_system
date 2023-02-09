@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <img :src="welcome"
-         class="welcome">
+    <img :src="welcome" class="welcome" alt="" />
   </div>
 </template>
 

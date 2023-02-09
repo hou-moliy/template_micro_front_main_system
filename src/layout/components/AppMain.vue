@@ -1,13 +1,9 @@
 <template>
-  <section class="app-main"
-           id="microApp">
-    <!-- <transition name="fade-transform"
-                mode="out-in"> -->
+  <section class="app-main" id="microApp">
     <keep-alive :include="cachedViews">
       <router-view :key="key" />
     </keep-alive>
-    <!-- </transition> -->
-    <!-- 挂在子应用 -->
+    <!-- 挂载子应用 -->
     <section id="Appmicro" />
   </section>
 </template>

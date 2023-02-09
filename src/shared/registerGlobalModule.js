@@ -40,7 +40,7 @@ const initStateByProps = (initState, props) => {
     mutations: {
       // 更改数据
       SET_GLOBAL_STATE (state, payload) {
-        state = Object.assign(state, payload);
+        Object.assign(state, payload);
       },
       // 通知父应用
       EMIT_GLOBAL_STATE (state, data) {
