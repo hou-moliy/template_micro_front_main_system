@@ -8,34 +8,38 @@
         to="/"
       >
         <img v-if="logo" :src="logo" class="sidebar-logo" alt="" />
-        <h1 v-else class="sidebar-title">{{ title }}</h1>
+        <h1 v-else class="sidebar-title">
+          {{ title }}
+        </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo" alt="" />
-        <h1 class="sidebar-title">{{ title }}</h1>
+        <h1 class="sidebar-title">
+          {{ title }}
+        </h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
-import logoImg from '@/assets/logo/logo.png'
-import defaultSettings from '@/settings'
+import logoImg from "@/assets/logo/logo.png";
+import defaultSettings from "@/settings";
 export default {
-  name: 'SidebarLogo',
+  name: "SidebarLogo",
   props: {
     collapse: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data () {
     return {
       title: defaultSettings.title,
-      logo: logoImg
-    }
-  }
-}
+      logo: logoImg,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

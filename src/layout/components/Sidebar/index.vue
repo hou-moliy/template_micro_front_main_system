@@ -13,8 +13,8 @@
         mode="vertical"
       >
         <sidebar-item
-          v-for="route in routes"
-          :key="route.path"
+          v-for="(route, index) in permission_routes"
+          :key="`${route.path}_${index}`"
           :item="route"
           :base-path="route.path"
         />
@@ -24,38 +24,38 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Logo from './Logo'
-import SidebarItem from './SidebarItem'
-import variables from '@/styles/variables.scss'
+import { mapGetters } from "vuex";
+import Logo from "./Logo";
+import SidebarItem from "./SidebarItem";
+import variables from "@/styles/variables.scss";
 
 export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      "permission_routes",
+      "sidebar",
     ]),
     routes () {
-      return this.$router.options.routes
+      return this.$router.options.routes;
     },
     activeMenu () {
-      const route = this.$route
-      const { meta, path } = route
-      // if set path, the sidebar will highlight the path you set
+      const route = this.$route;
+      const { meta, path } = route;
       if (meta.activeMenu) {
-        return meta.activeMenu
+        return meta.activeMenu;
       }
-      return path
+      return path;
     },
     showLogo () {
-      return this.$store.state.settings.sidebarLogo
+      return this.$store.state.settings.sidebarLogo;
     },
     variables () {
-      return variables
+      return variables;
     },
     isCollapse () {
-      return !this.sidebar.opened
-    }
-  }
-}
+      return !this.sidebar.opened;
+    },
+  },
+};
 </script>

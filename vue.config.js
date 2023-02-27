@@ -1,123 +1,168 @@
-'use strict'
-const path = require('path')
-const defaultSettings = require('./src/settings.js')
-
-function resolve(dir) {
-  return path.join(__dirname, dir)
+"use strict";
+const path = require("path");
+const defaultSettings = require("./src/settings.js");
+// 代码压缩
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
+// 解决H5缓存问题
+const filePath = "js/"; // 打包文件存放文件夹路径
+const Timestamp = "." + new Date().getTime();// 时间戳
+function resolve (dir) {
+  return path.join(__dirname, dir);
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
-
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, Mac: sudo npm run
-// You can change the port by the following methods:
-// port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 9528 // dev port
-
-// All configuration item explanations can be find in https://cli.vuejs.org/config/
+const name = defaultSettings.title; // page title
+const port = process.env.port || process.env.npm_config_port || 9529; // dev port
 module.exports = {
-  /**
-   * You will need to set publicPath if you plan to deploy your site under a sub path,
-   * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
-   * then publicPath should be set to "/bar/".
-   * In most cases please use '/' !!!
-   * Detail: https://cli.vuejs.org/config/#publicpath
-   */
-  publicPath: '/',
-  outputDir: 'dist',
-  assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  publicPath: process.env.VUE_APP_PROJECT_PATH || "/",
+  outputDir: "dist",
+  assetsDir: "static",
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
     overlay: {
       warnings: false,
-      errors: true
+      errors: true,
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      // 公共的静态资源代理
+      [process.env.VUE_APP_STATIC_IMGS]: {
+        target: "http://10.1.63.203:8050/",
+        changeOrigin: true,
+      },
+      // 公用代理-admin
+      [process.env.VUE_APP_BASE_API]: {
+        target: "http://10.1.35.207:8180/admin", // 集中管理平台
+        changeOrigin: true,
+        pathRewrite: {
+          ["^" + process.env.VUE_APP_BASE_API]: "",
+        },
+      },
+    },
   },
-  configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
-    name: name,
-    resolve: {
+  configureWebpack: config => {
+    config.name = name;
+    config.resolve = {
+      extensions: [".js", ".vue", ".json"],
       alias: {
-        '@': resolve('src')
-      }
+        "@": resolve("src"),
+      },
+    };
+    config.output.library = `${name}-[name]`;
+    config.output.libraryTarget = "umd";
+    config.output.jsonpFunction = `webpackJsonp_${name}`;
+    if (process.env.NODE_ENV === "prod") {
+      // 输出重构  打包编译后的 文件名称  【模块名称.时间戳.js】 解决js缓存问题
+      config.output.filename = `${filePath}[name]${Timestamp}.js`;
+      config.output.chunkFilename = `${filePath}[name]${Timestamp}.js`;
+      config.plugins.push(
+        new UglifyJsPlugin({
+          uglifyOptions: {
+            compress: {
+              drop_debugger: true, // 生产环境自动删除debugger
+              drop_console: true, // 生产环境自动删除console
+              pure_funcs: ["console.log"],
+            },
+            warnings: false,
+          },
+          sourceMap: false, // 关掉sourcemap 会生成对于调试的完整的.map文件，但同时也会减慢打包速度
+          parallel: true, // 使用多进程并行运行来提高构建速度。默认并发运行数：os.cpus().length - 1。
+        }),
+        new CompressionWebpackPlugin({
+          algorithm: "gzip",
+          test: /\.js$|\.html$|\.json$|\.css/,
+          threshold: 10240, // 对超过10k的数据压缩
+          deleteOriginalAssets: false, // 不删除源文件
+          minRatio: 0.8,
+        }),
+      );
+      // 开启分离js
+      config.optimization = {
+        nodeEnv: false, // 解决webpack5不能自定义环境名称问题
+        runtimeChunk: "single",
+        splitChunks: {
+          chunks: "all",
+          maxInitialRequests: Infinity,
+          minSize: 2000,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name (module) {
+                const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+                return `npm.${packageName.replace("@", "")}`;
+              },
+            },
+          },
+        },
+      };
+      config.plugins = [...config.plugins];
+    } else {
+      config.optimization = {
+        nodeEnv: false, // 解决webpack5不能自定义环境名称问题
+      };
     }
   },
-  chainWebpack(config) {
-    // it can improve the speed of the first screen, it is recommended to turn on preload
-    config.plugin('preload').tap(() => [
+  chainWebpack: config => {
+    config.plugin("preload").tap(() => [
       {
-        rel: 'preload',
-        // to ignore runtime.js
-        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
+        rel: "preload",
         fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
-        include: 'initial'
-      }
-    ])
-
-    // when there are many pages, it will cause too many meaningless requests
-    config.plugins.delete('prefetch')
-
-    // set svg-sprite-loader
+        include: "initial",
+      },
+    ]);
+    config.plugins.delete("prefetch");
     config.module
-      .rule('svg')
-      .exclude.add(resolve('src/icons'))
-      .end()
+      .rule("svg")
+      .exclude.add(resolve("src/icons"))
+      .end();
     config.module
-      .rule('icons')
+      .rule("icons")
       .test(/\.svg$/)
-      .include.add(resolve('src/icons'))
+      .include.add(resolve("src/icons"))
       .end()
-      .use('svg-sprite-loader')
-      .loader('svg-sprite-loader')
+      .use("svg-sprite-loader")
+      .loader("svg-sprite-loader")
       .options({
-        symbolId: 'icon-[name]'
+        symbolId: "icon-[name]",
       })
-      .end()
+      .end();
 
     config
-      .when(process.env.NODE_ENV !== 'development',
+      .when(process.env.NODE_ENV !== "development",
         config => {
           config
-            .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
+            .plugin("ScriptExtHtmlWebpackPlugin")
+            .after("html")
+            .use("script-ext-html-webpack-plugin", [{
+              inline: /runtime\..*\.js$/,
             }])
-            .end()
+            .end();
           config
             .optimization.splitChunks({
-              chunks: 'all',
+              chunks: "all",
               cacheGroups: {
                 libs: {
-                  name: 'chunk-libs',
+                  name: "chunk-libs",
                   test: /[\\/]node_modules[\\/]/,
                   priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
+                  chunks: "initial",
                 },
                 elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                  name: "chunk-elementUI",
+                  priority: 20,
+                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/,
                 },
                 commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
+                  name: "chunk-commons",
+                  test: resolve("src/components"),
+                  minChunks: 3,
                   priority: 5,
-                  reuseExistingChunk: true
-                }
-              }
-            })
-          // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
-          config.optimization.runtimeChunk('single')
-        }
-      )
-  }
-}
+                  reuseExistingChunk: true,
+                },
+              },
+            });
+          config.optimization.runtimeChunk("single");
+        },
+      );
+  },
+};

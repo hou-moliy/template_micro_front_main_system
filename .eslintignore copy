@@ -1,0 +1,8 @@
+build/*.js
+src/assets
+public
+dist
+src/icons
+node_modules/
+/src/manifest.json
+/src/public-path.js

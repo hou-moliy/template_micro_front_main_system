@@ -1,61 +1,64 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: 'babel-eslint',
-    sourceType: 'module'
+    parser: 'babel-eslint',// 解决import导入问题
+    sourceType: 'module',
+    ecmaVersion: 2018
   },
   env: {
     browser: true,
-    node: true,
+    node: true,  // 解决__dirname报错
     es6: true,
+    commonjs: true,
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
-
-  // add your custom rules here
-  //it is base on https://github.com/vuejs/eslint-config-vue
+  // 检查包括了那些规范，通过这个节点可以配置使用 内置规范 还是 第三方规范
+  extends: ['plugin:vue/essential', 'eslint:recommended'],
+  globals: {
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly",
+    process: true // 解决process读取问题
+  },
   rules: {
-    "vue/max-attributes-per-line": [2, {
-      "singleline": 10,
-      "multiline": {
-        "max": 1,
-        "allowFirstLine": false
-      }
-    }],
-    "vue/singleline-html-element-content-newline": "off",
-    "vue/multiline-html-element-content-newline": "off",
-    "vue/name-property-casing": ["error", "PascalCase"],
-    "vue/no-v-html": "off",
-    'accessor-pairs': 2,
+    // "vue/max-attributes-per-line": [2, {
+    //   "singleline": 10,
+    //   "multiline": {
+    //     "max": 1,
+    //     "allowFirstLine": false
+    //   }
+    // }],
+    // "vue/singleline-html-element-content-newline": "off",
+    // "vue/multiline-html-element-content-newline": "off",
+    // "vue/name-property-casing": ["error", "PascalCase"],
+    // "vue/no-v-html": "off",
+    'accessor-pairs': 2, // 强制getter/setter成对出现在对象中
     'arrow-spacing': [2, {
       'before': true,
       'after': true
-    }],
-    'block-spacing': [2, 'always'],
+    }], // 强制箭头函数的箭头前后使用一致的空格,有一个或多个
+    'block-spacing': [2, 'always'], // 强制在代码块中开括号前和闭括号后有空格 
     'brace-style': [2, '1tbs', {
       'allowSingleLine': true
-    }],
-    'camelcase': [0, {
-      'properties': 'always'
-    }],
-    'comma-dangle': [2, 'never'],
+    }], // 允许块的开括号和闭括号在 同一行
+    camelcase: ["error", { properties: "never", ignoreDestructuring: true }], // 使用驼峰命名，不检查属性名称，不检查解构标识符
+    "comma-dangle": ["error", "always-multiline"], // 对象字面量项尾是逗号
     'comma-spacing': [2, {
       'before': false,
       'after': true
-    }],
-    'comma-style': [2, 'last'],
+    }],  // 强制在逗号前后使用一致的空格
+    'comma-style': [2, 'last'], // 强制使用一致的逗号风格, 要求逗号放在数组元素、对象属性或变量声明之后，且在同一行
     'constructor-super': 2,
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
     'eol-last': 2,
-    'eqeqeq': ["error", "always", { "null": "ignore" }],
+    'eqeqeq': [1, "always", { "null": "ignore" }], // 警告，要求使用 === 和 !==,这里似乎和sonar有点差异
     'generator-star-spacing': [2, {
-      'before': true,
+      'before': false,
       'after': true
     }],
     'handle-callback-err': [2, '^(err|error)$'],
     'indent': [2, 2, {
       'SwitchCase': 1
-    }],
+    }], // 两个空格缩进
     'jsx-quotes': [2, 'prefer-single'],
     'key-spacing': [2, {
       'beforeColon': false,
@@ -150,49 +153,66 @@ module.exports = {
     'no-useless-computed-key': 2,
     'no-useless-constructor': 2,
     'no-useless-escape': 0,
-    'no-whitespace-before-property': 2,
-    'no-with': 2,
-    'one-var': [2, {
-      'initialized': 'never'
-    }],
+    'no-whitespace-before-property': 2, // 禁止属性前有空白
     'operator-linebreak': [2, 'after', {
       'overrides': {
         '?': 'before',
         ':': 'before'
       }
-    }],
-    'padded-blocks': [2, 'never'],
-    'quotes': [2, 'single', {
+    }], // 要求把换行符放在操作符后面
+    'padded-blocks': [2, 'never'], //  禁止块语句和类的开始或末尾有空行
+
+    'quotes': [1, 'double', {
       'avoidEscape': true,
       'allowTemplateLiterals': true
-    }],
-    'semi': [2, 'never'],
+    }], // 建议使用双引号
+    'semi': [1, 'always'], // 建议以分号结尾
     'semi-spacing': [2, {
       'before': false,
       'after': true
     }],
-    'space-before-blocks': [2, 'always'],
-    'space-before-function-paren': [2, 'always'],
-    'space-in-parens': [2, 'never'],
-    'space-infix-ops': 2,
+    "no-nested-ternary": "error", // 禁止使用嵌套的三元表达式
+    "no-var": "error", // 使用 let 或 const 而不是 var
+    'space-before-blocks': [2, 'always'], // 强制在块之前使用一致的空格
+    'space-before-function-paren': [2, 'always'], // 强制在 function的左括号之前使用一致的空格
+    'space-in-parens': [2, 'never'], // 强制在圆括号内使用一致的空格
+    'space-infix-ops': 2, // 要求操作符周围有空格
     'space-unary-ops': [2, {
       'words': true,
       'nonwords': false
-    }],
+    }], // 	强制在一元操作符前后使用一致的空格
     'spaced-comment': [2, 'always', {
       'markers': ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ',']
-    }],
-    'template-curly-spacing': [2, 'never'],
-    'use-isnan': 2,
-    'valid-typeof': 2,
-    'wrap-iife': [2, 'any'],
-    'yield-star-spacing': [2, 'both'],
-    'yoda': [2, 'never'],
-    'prefer-const': 2,
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    }], // 	强制在注释中 // 或 /* 使用一致的空格
+    'template-curly-spacing': [2, 'never'], // 要求或禁止在模板标记和它们的字面量之间有空格
+    'use-isnan': 2, // 要求使用 isNaN() 检查 NaN
+    'valid-typeof': 2, // 强制 typeof 表达式与有效的字符串进行比较
+    'wrap-iife': [2, 'any'], // 需要把立即执行的函数包裹起来
+    'prefer-const': 2, // 要求使用 const 声明那些声明后不再被修改的变量
+    'no-debugger': process.env.NODE_ENV === 'prod' ? 2 : 0,
     'object-curly-spacing': [2, 'always', {
-      objectsInObjects: false
-    }],
-    'array-bracket-spacing': [2, 'never']
-  }
+      objectsInObjects: true
+    }], // 强制在花括号中使用一致的空格
+    'array-bracket-spacing': [2, 'never'] // 禁止在数组括号内出现空格
+  },
+  overrides: [
+    {
+      files: [
+        'src/views/index.vue',
+        'src/views/**/index.vue'
+      ],
+      rules: {
+        'vue/multi-word-component-names': 0
+      }
+    },
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
+      env: {
+        jest: true
+      }
+    }
+  ]
 }
