@@ -50,4 +50,3 @@ const handleToErrorPage = (to, next) => {
 router.afterEach(() => {
   NProgress.done();
 });
-

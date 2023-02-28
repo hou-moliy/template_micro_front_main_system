@@ -37,7 +37,6 @@ export default {
         return "svg-icon " + this.className;
       }
       return "svg-icon";
-
     },
     styleExternalIcon () {
       return {

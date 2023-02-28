@@ -5,8 +5,8 @@ const defaultSettings = require("./src/settings.js");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const CompressionWebpackPlugin = require("compression-webpack-plugin");
 // 解决H5缓存问题
-let filePath = "js/"; // 打包文件存放文件夹路径
-let Timestamp = "." + new Date().getTime();// 时间戳
+const filePath = "js/"; // 打包文件存放文件夹路径
+const Timestamp = "." + new Date().getTime();// 时间戳
 function resolve (dir) {
   return path.join(__dirname, dir);
 }
@@ -59,7 +59,7 @@ module.exports = {
         new UglifyJsPlugin({
           uglifyOptions: {
             compress: {
-              drop_debugger: true,// 生产环境自动删除debugger
+              drop_debugger: true, // 生产环境自动删除debugger
               drop_console: true, // 生产环境自动删除console
               pure_funcs: ["console.log"],
             },
@@ -71,14 +71,14 @@ module.exports = {
         new CompressionWebpackPlugin({
           algorithm: "gzip",
           test: /\.js$|\.html$|\.json$|\.css/,
-          threshold: 10240,// 对超过10k的数据压缩
+          threshold: 10240, // 对超过10k的数据压缩
           deleteOriginalAssets: false, // 不删除源文件
           minRatio: 0.8,
         }),
       );
       // 开启分离js
       config.optimization = {
-        nodeEnv: false,// 解决webpack5不能自定义环境名称问题
+        nodeEnv: false, // 解决webpack5不能自定义环境名称问题
         runtimeChunk: "single",
         splitChunks: {
           chunks: "all",
@@ -98,7 +98,7 @@ module.exports = {
       config.plugins = [...config.plugins];
     } else {
       config.optimization = {
-        nodeEnv: false,// 解决webpack5不能自定义环境名称问题
+        nodeEnv: false, // 解决webpack5不能自定义环境名称问题
       };
     }
   },
