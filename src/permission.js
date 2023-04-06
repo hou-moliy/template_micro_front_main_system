@@ -12,10 +12,13 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start();
   document.title = defaultSettings.title;
   const hasToken = getToken();
-  if (to.path === "/login") {
-    next();
-  } else if (hasToken) {
-    handleToErrorPage(to, next);
+  if (hasToken) {
+    if (to.path === "/login") {
+      NProgress.done();
+      next({ path: "/" });
+    } else {
+      handleToErrorPage(to, next);
+    }
   } else {
     whiteList.indexOf(to.path) !== -1 ? next() : next(`/login?redirect=${to.path}`);
   }
